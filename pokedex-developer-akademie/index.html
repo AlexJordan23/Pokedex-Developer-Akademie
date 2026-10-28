@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#071b20">
+  <title>Pokédex</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#" aria-label="Pokédex Startseite">
+      <span class="brand-mark" aria-hidden="true">◉</span>
+      <span>Poké<span class="brand-accent">dex</span></span>
+    </a>
+    <div class="header-tools">
+      <label class="search-wrap">
+        <span class="sr-only">Pokémon suchen</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 5 5"></path></svg>
+        <input id="search" type="search" placeholder="Pokémon suchen…" autocomplete="off">
+        <kbd>/</kbd>
+      </label>
+      <button id="clear-search" class="clear-search" type="button" aria-label="Suche leeren" hidden>×</button>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="intro">
+      <div>
+        
+      </div>
+      <div class="dex-count"><strong id="result-count">151</strong><span>Pokémon geladen</span></div>
+    </section>
+
+    <section class="filters" aria-label="Pokémon filtern">
+      <div class="filter-left">
+        <label class="select-label">Sortieren
+          <select id="sort">
+            <option value="id">Pokédex-Nummer</option>
+            <option value="name">Name (A–Z)</option>
+            <option value="name-desc">Name (Z–A)</option>
+          </select>
+        </label>
+        <label class="select-label">Typ
+          <select id="type-filter">
+            <option value="all">Alle Typen</option>
+            <option value="normal">Normal</option><option value="fire">Feuer</option>
+            <option value="water">Wasser</option><option value="electric">Elektro</option>
+            <option value="grass">Pflanze</option><option value="ice">Eis</option>
+            <option value="fighting">Kampf</option><option value="poison">Gift</option>
+            <option value="ground">Boden</option><option value="flying">Flug</option>
+            <option value="psychic">Psycho</option><option value="bug">Käfer</option>
+            <option value="rock">Gestein</option><option value="ghost">Geist</option>
+            <option value="dragon">Drache</option><option value="dark">Unlicht</option>
+            <option value="steel">Stahl</option><option value="fairy">Fee</option>
+          </select>
+        </label>
+      </div>
+      <p class="hint">Wähle ein Pokémon für Details <span aria-hidden="true">↗</span></p>
+    </section>
+
+    <div id="status" class="status" role="status">Pokémon werden geladen …</div>
+    <section id="pokemon-grid" class="pokemon-grid" aria-label="Pokémon-Liste"></section>
+    <div id="empty-state" class="empty-state" hidden>
+      <span class="empty-icon">⌕</span>
+      <h2>Kein Pokémon gefunden</h2>
+      <p>Versuche einen anderen Namen oder ändere den Filter.</p>
+      <button id="reset-filters" class="button" type="button">Filter zurücksetzen</button>
+    </div>
+    <div class="load-more-wrap"><button id="load-more" class="button button-secondary" type="button">Weitere Pokémon laden</button></div>
+  </main>
+
+    <footer class="footer_container">
+        <div class="content_wrapper">
+
+        <div class="footer_container3">
+            <div class="flex_box">
+                <img class="devlogo" src="./pictures/devlogo3.png" alt="Developer Akademie Logo">
+                <h2 class="developer_container">Developer Akademie</h2>
+            </div>
+            <p class="developer_container">c 2023 Developer Akademie GmbH</p>
+            </div>
+        </div>
+    </footer>
+
+  <dialog id="detail-dialog" class="detail-dialog" aria-labelledby="detail-name">
+    <button class="modal-close" id="close-dialog" type="button" aria-label="Details schließen">×</button>
+    <div id="detail-content"></div>
+  </dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
