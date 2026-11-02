@@ -537,6 +537,7 @@ h1 span {
     justify-content: center;
     margin: 0;
     font-family: 'Figtree', sans-serif;
+    white-space: nowrap;
 }
 
 .footer_container2 {
