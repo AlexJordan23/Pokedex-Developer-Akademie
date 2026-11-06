@@ -194,7 +194,7 @@ h1 span {
   align-items: center;
   gap: 9px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 16px;
  }
 .select-label select { 
   max-width: 180px;
@@ -203,13 +203,16 @@ h1 span {
   padding: 8px 28px 8px 10px;
   background:#102b32;
   color:#e9f1f2;
-  font-size: 12px;
+  font-size: 16px;
  }
-.hint { 
-  color: var(--muted);
-  font-size: 11px;
-  margin: 0;
- }
+.hint {
+    color: var(--muted);
+    font-size: 16px;
+    margin: 0;
+    white-space: nowrap;
+    flex-shrink: 1;
+    min-width: 0;
+}
 .hint span { 
   color: var(--green);
   margin-left: 5px;
