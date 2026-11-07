@@ -209,14 +209,16 @@ h1 span {
     color: var(--muted);
     font-size: 14px;
     margin: 0;
-    white-space: nowrap;
+    white-space: normal;
     flex-shrink: 1;
     min-width: 0;
+    overflow-wrap: break-word;
 }
-.hint span { 
-  color: var(--green);
-  margin-left: 5px;
- }
+
+.hint span {
+    color: var(--green);
+    margin-left: 5px;
+}
 .pokemon-grid { 
   display: grid;
   grid-template-columns: repeat(4,minmax(0,1fr));
