@@ -1,5 +1,5 @@
 const API = "https://pokeapi.co/api/v2";
-const LIMIT = 24;
+const LIMIT = 20;
 const TYPE_COLORS = {
   normal:"#a8a77a", fire:"#ee4b2b", water:"#4b91f7", electric:"#e8c936",
   grass:"#78c850", ice:"#76d7e8", fighting:"#c22e28", poison:"#a33ea1",
