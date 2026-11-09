@@ -100,10 +100,40 @@ async function loadPokemon() {
     if (state.all.length) status.textContent = "";
   }
 }
+
+let currentPokemonIndex = 0;
+
 function openDetails(id) {
-  const pokemon = state.all.find(item => item.id === Number(id));
-  if (!pokemon) return;
-  const dialog = $("#detail-dialog");
+    currentPokemonIndex = state.visible.findIndex(
+        item => item.id === Number(id)
+    );
+
+    if (currentPokemonIndex === -1) return;
+
+    renderPokemonDetails();
+
+
+  $("#prev-pokemon").addEventListener("click", () => {
+      if (currentPokemonIndex > 0) {
+          currentPokemonIndex--;
+          renderPokemonDetails();
+      }
+  });
+
+  $("#next-pokemon").addEventListener("click", () => {
+      if (currentPokemonIndex < state.visible.length - 1) {
+          currentPokemonIndex++;
+          renderPokemonDetails();
+      }
+  });
+
+}
+
+function renderPokemonDetails() {
+    const pokemon = state.visible[currentPokemonIndex];
+    if (!pokemon) return;
+
+    const dialog = $("#detail-dialog");
   const types = pokemon.types.map(item => item.type.name);
   const primaryType = types[0] || "normal";
   const stats = pokemon.stats.map(item => {

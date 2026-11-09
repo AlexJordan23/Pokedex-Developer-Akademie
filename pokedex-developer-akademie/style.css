@@ -397,11 +397,49 @@ h1 span {
   border-radius: 20px;
   background:#0b242b;
   box-shadow: 0 25px 100px #0009;
+  position: relative;
  }
-.detail-dialog::backdrop { 
-  background:rgba(0,8,11,.78);
-  backdrop-filter: blur(5px);
- }
+
+
+
+.detail-navigation {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    transform: translateY(-50%);
+    pointer-events: none;
+    z-index: 20;
+}
+
+
+.detail-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: 50%;
+    border: 1px solid #7ac74c;
+    background: #10272b;
+    color: white;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: background 0.2s, color 0.2s;
+}
+
+.detail-arrow:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
 .modal-close { 
   position: sticky;
   float: right;
@@ -577,6 +615,8 @@ h1 span {
     align-items: center;
     gap: 10px;
 }
+
+
 @keyframes appear { 
   from {
     opacity: 0;
