@@ -74,32 +74,49 @@ function renderGrid() {
   loadMoreButton.hidden = state.shown >= state.visible.length || state.visible.length === 0;
   status.textContent = state.loading ? "Pokémon werden geladen …" : "";
 }
+
 async function loadPokemon() {
-  state.loading = true;
-  status.textContent = "Pokémon werden geladen …";
-  loadMoreButton.disabled = true;
-  try {
-    const response = await fetch(`${API}/pokemon?limit=151&offset=0`);
-    if (!response.ok) throw new Error("Die Pokémon-Liste konnte nicht geladen werden.");
-    const data = await response.json();
-    // Detaildaten parallel laden, damit Typen und Artwork für Filter/Karten verfügbar sind.
-    const details = await Promise.all(data.results.map(async item => {
-      const result = await fetch(item.url);
-      if (!result.ok) throw new Error("Ein Pokémon konnte nicht geladen werden.");
-      return result.json();
-    }));
-    state.all = details;
-    state.visible = [...details];
-    renderGrid();
-  } catch (error) {
-    status.innerHTML = `Die Pokémon konnten gerade nicht geladen werden. Bitte prüfe deine Internetverbindung und <button class="button" id="retry-load" type="button">versuche es erneut</button>.`;
-    $("#retry-load")?.addEventListener("click", loadPokemon);
-  } finally {
-    state.loading = false;
-    loadMoreButton.disabled = false;
-    if (state.all.length) status.textContent = "";
-  }
+    state.loading = true;
+    status.textContent = "Pokémon werden geladen …";
+    loadMoreButton.disabled = true;
+
+    try {
+        const response = await fetch(`${API}/pokemon?limit=151&offset=0`);
+        if (!response.ok) throw new Error("Pokémon-Liste konnte nicht geladen werden.");
+
+        const data = await response.json();
+
+        const details = await Promise.all(
+            data.results.map(async item => {
+                const result = await fetch(item.url);
+                if (!result.ok) throw new Error("Pokémon konnte nicht geladen werden.");
+                return result.json();
+            })
+        );
+
+        state.all = details;
+        state.visible = [...details];
+        renderGrid();
+
+    } catch (error) {
+        status.innerHTML = `
+            Die Pokémon konnten nicht geladen werden.
+            Bitte prüfe deine Internetverbindung.
+            <button class="button" id="retry-load" type="button">
+                Versuche es erneut
+            </button>
+        `;
+
+        $("#retry-load").addEventListener("click", loadPokemon);
+
+    } finally {
+        state.loading = false;
+        loadMoreButton.disabled = false;
+
+        if (state.all.length) status.textContent = "";
+    }
 }
+
 
 let currentPokemonIndex = 0;
 
@@ -185,4 +202,4 @@ document.addEventListener("keydown", event => {
     event.preventDefault(); search.focus();
   }
 });
-loadPokemon();
+
