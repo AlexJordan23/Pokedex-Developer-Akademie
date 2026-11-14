@@ -1,0 +1,61 @@
+.detail-dialog { 
+  width: min(660px,calc(100vw - 28px));
+  max-width: none;
+  max-height: calc(100vh - 32px);
+  padding: 0;
+  overflow: auto;
+  color: var(--text);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 20px;
+  background:#0b242b;
+  box-shadow: 0 25px 100px #0009;
+  position: relative;
+ }
+
+ .modal-close { 
+  position: sticky;
+  float: right;
+  top: 12px;
+  margin: 12px 12px -45px 0;
+  z-index: 3;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #ffffff35;
+  border-radius: 50%;
+  background:#082027aa;
+  color:white;
+  font-size: 22px;
+  line-height: 1;
+ }
+
+ .detail-navigation {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    transform: translateY(-50%);
+    pointer-events: none;
+    z-index: 20;
+}
+
+.detail-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: 50%;
+    border: 1px solid #7ac74c;
+    background: #10272b;
+    color: white;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: background 0.2s, color 0.2s;
+}

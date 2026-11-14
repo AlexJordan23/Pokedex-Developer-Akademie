@@ -149,6 +149,17 @@ function openDetails(id) {
 function renderPokemonDetails() {
     const pokemon = state.visible[currentPokemonIndex];
     if (!pokemon) return;
+    updatePokemonNavigation();
+
+    // Pfeile je nach Position deaktivieren
+    $("#prev-pokemon").disabled = currentPokemonIndex === 0;
+
+    $("#next-pokemon").disabled =
+      currentPokemonIndex === state.visible.length - 1;
+
+    // Rechte Pfeiltaste nach dem Nachladen aktualisieren
+    $("#next-pokemon").disabled =
+      currentPokemonIndex >= state.visible.length - 1;
 
     const dialog = $("#detail-dialog");
   const types = pokemon.types.map(item => item.type.name);
@@ -175,6 +186,20 @@ function renderPokemonDetails() {
     <div class="detail-body"><h3>Basiswerte</h3><div class="stats">${stats}</div></div>`;
   if (!dialog.open) dialog.showModal();
 }
+
+function updatePokemonNavigation() {
+    const nextButton = $("#next-pokemon");
+    const prevButton = $("#prev-pokemon");
+
+    if (currentPokemonIndex === -1) return;
+
+    // Linker Pfeil deaktivieren, wenn erstes Pokémon erreicht
+    prevButton.disabled = currentPokemonIndex === 0;
+
+    // Rechter Pfeil deaktivieren, wenn letztes Pokémon erreicht
+    nextButton.disabled =
+        currentPokemonIndex >= state.visible.length - 1;
+}
 grid.addEventListener("click", event => {
   const card = event.target.closest("[data-id]");
   if (card) openDetails(card.dataset.id);
@@ -188,7 +213,15 @@ $("#clear-search").addEventListener("click", () => {
 });
 typeFilter.addEventListener("change", applyFilters);
 sortSelect.addEventListener("change", applyFilters);
-loadMoreButton.addEventListener("click", () => { state.shown += LIMIT; renderGrid(); });
+loadMoreButton.addEventListener("click", () => {
+    state.shown += LIMIT;
+    renderGrid();
+
+    // Navigation im geöffneten Pokémon-Modal aktualisieren
+    if ($("#detail-dialog").open) {
+        updatePokemonNavigation();
+    }
+});
 $("#reset-filters").addEventListener("click", () => {
   search.value = ""; typeFilter.value = "all"; sortSelect.value = "id";
   $("#clear-search").hidden = true; applyFilters();
