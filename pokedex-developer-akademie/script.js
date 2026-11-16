@@ -1,4 +1,5 @@
 const API = "https://pokeapi.co/api/v2";
+let savedScrollPosition = 0;
 const LIMIT = 20;
 const TYPE_COLORS = {
   normal:"#a8a77a", fire:"#ee4b2b", water:"#4b91f7", electric:"#e8c936",
@@ -30,15 +31,19 @@ const emptyState = $("#empty-state");
 const resultCount = $("#result-count");
 
 function formatId(id) { return `#${String(id).padStart(3, "0")}`; }
+
 function titleCase(value) { return value.split("-").map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(" "); }
+
 function officialArtwork(pokemon) {
   return pokemon.sprites?.other?.["official-artwork"]?.front_default
     || pokemon.sprites?.front_default || "";
 }
+
 function typeBadge(type) {
   return `<span class="type-badge" style="background:${TYPE_COLORS[type] || "#627d83"}" title="${TYPE_LABELS[type] || type}">
     <span aria-hidden="true">${TYPE_EMOJI[type] || "✦"}</span><span>${TYPE_LABELS[type] || titleCase(type)}</span></span>`;
 }
+
 function cardTemplate(pokemon, index) {
   const types = pokemon.types.map(item => item.type.name);
   const primaryType = types[0] || "normal";
@@ -52,6 +57,7 @@ function cardTemplate(pokemon, index) {
     <span class="card-footer">${types.map(typeBadge).join("")}</span>
   </button>`;
 }
+
 function applyFilters() {
   const query = search.value.trim().toLocaleLowerCase("de");
   const type = typeFilter.value;
@@ -66,6 +72,7 @@ function applyFilters() {
   state.shown = LIMIT;
   renderGrid();
 }
+
 function renderGrid() {
   const visible = state.visible.slice(0, state.shown);
   grid.innerHTML = visible.map(cardTemplate).join("");
@@ -81,7 +88,7 @@ async function loadPokemon() {
     loadMoreButton.disabled = true;
 
     try {
-        const response = await fetch(`${API}/pokemon?limit=151&offset=0`);
+        const response = await fetch(`${API}/pokemon?limit=40&offset=0`);
         if (!response.ok) throw new Error("Pokémon-Liste konnte nicht geladen werden.");
 
         const data = await response.json();
@@ -161,7 +168,7 @@ function renderPokemonDetails() {
     $("#next-pokemon").disabled =
       currentPokemonIndex >= state.visible.length - 1;
 
-    const dialog = $("#detail-dialog");
+  const dialog = $("#detail-dialog");
   const types = pokemon.types.map(item => item.type.name);
   const primaryType = types[0] || "normal";
   const stats = pokemon.stats.map(item => {
@@ -184,7 +191,10 @@ function renderPokemonDetails() {
       </div>
     </div>
     <div class="detail-body"><h3>Basiswerte</h3><div class="stats">${stats}</div></div>`;
-  if (!dialog.open) dialog.showModal();
+  if (!dialog.open) {
+    lockPageScroll();
+    dialog.showModal();
+  }
 }
 
 function updatePokemonNavigation() {
@@ -199,6 +209,28 @@ function updatePokemonNavigation() {
     // Rechter Pfeil deaktivieren, wenn letztes Pokémon erreicht
     nextButton.disabled =
         currentPokemonIndex >= state.visible.length - 1;
+}
+
+function lockPageScroll() {
+    savedScrollPosition = window.scrollY;
+
+    document.documentElement.classList.add("modal-open");
+    document.body.classList.add("modal-open");
+
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${savedScrollPosition}px`;
+    document.body.style.width = "100%";
+}
+
+function unlockPageScroll() {
+    document.documentElement.classList.remove("modal-open");
+    document.body.classList.remove("modal-open");
+
+    document.body.style.position = "";
+    document.body.style.top = "";
+    document.body.style.width = "";
+
+    window.scrollTo(0, savedScrollPosition);
 }
 grid.addEventListener("click", event => {
   const card = event.target.closest("[data-id]");
@@ -226,7 +258,10 @@ $("#reset-filters").addEventListener("click", () => {
   search.value = ""; typeFilter.value = "all"; sortSelect.value = "id";
   $("#clear-search").hidden = true; applyFilters();
 });
-$("#close-dialog").addEventListener("click", () => $("#detail-dialog").close());
+$("#close-dialog").addEventListener("click", () => {
+    $("#detail-dialog").close();
+    unlockPageScroll();
+});
 $("#detail-dialog").addEventListener("click", event => {
   if (event.target === $("#detail-dialog")) $("#detail-dialog").close();
 });

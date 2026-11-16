@@ -388,25 +388,38 @@ h1 span {
  }
 
 
-/* Dialog als Bezugspunkt */
+
+/* Pokémon-Detailfenster */
 .detail-dialog {
-    position: relative;
-    padding-top: 58px;
-    box-sizing: border-box;
-
-    /* Dunkles Pokédex-Design wiederherstellen */
-    background: #0b252b;
-    color: #f1f7f7;
-
-    border: 1px solid rgba(255,255,255,.12);
-    border-radius: 18px;
-    box-shadow: 0 25px 100px #0009;
+    background: #0b252b !important;
+    color: #ffffff !important;
+    color-scheme: dark;
+    border: 1px solid #36545a;
+    border-radius: 16px;
+    padding: 24px;
+    width: min(90%, 650px);
+    max-height: 85vh;
+    overflow-y: auto;
 }
 
-/* Hintergrund hinter dem Modal */
 .detail-dialog::backdrop {
-    background: rgba(0, 0, 0, 0.75);
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(5px);
 }
+
+/* Texte im Detailfenster */
+.detail-dialog h1,
+.detail-dialog h2,
+.detail-dialog h3,
+.detail-dialog p {
+    color: #ffffff;
+}
+
+/* Buttons */
+.detail-dialog button {
+    color: #ffffff;
+}
+
 
 
 
@@ -419,8 +432,8 @@ h1 span {
     align-items: center;
     width: 100%;
     box-sizing: border-box;
-    margin: 0 0 12px;
-    padding: 0 12px;
+    margin: 65px 0 12px;
+    padding: 0 52px 0 12px;
     gap: 16px;
     z-index: 2;
 }
@@ -790,6 +803,43 @@ h1 span {
   }
  }
 
+ /* Scrollen im Hintergrund verhindern, solange Modal geöffnet ist */
+html.modal-open,
+body.modal-open {
+    overflow: hidden !important;
+    overscroll-behavior: none;
+}
+
+/* Pokémon-Detailfenster fixieren */
+dialog#detail-dialog[open] {
+  background: #0b252b !important;
+  color: #ffffff !important;
+  color-scheme: dark;
+    position: fixed !important;
+
+    top: 50% !important;
+    left: 50% !important;
+    right: auto !important;
+    bottom: auto !important;
+
+    transform: translate(-50%, -50%) !important;
+
+    margin: 0 !important;
+
+    width: min(780px, calc(100vw - 30px));
+    max-height: calc(100vh - 40px);
+
+    overflow: hidden !important;
+
+    box-sizing: border-box;
+    z-index: 9999;
+}
+
+/* Hintergrund abdunkeln */
+dialog#detail-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.75);
+}
+
  @media (max-width: 430px) {
     .pokemon-grid {
         grid-template-columns: 1fr;
@@ -812,3 +862,9 @@ h1 span {
     transition: none !important
     }
   }
+
+  html,
+  body {
+    background-color: #1b2024;
+    color-scheme: dark;
+}
