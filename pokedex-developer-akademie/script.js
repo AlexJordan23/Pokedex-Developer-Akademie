@@ -1,5 +1,8 @@
+import { pokemonDetailTemplate } from "./templates.js";
 const API = "https://pokeapi.co/api/v2";
+
 let savedScrollPosition = 0;
+let currentPokemonIndex = 0;
 const LIMIT = 20;
 const TYPE_COLORS = {
   normal:"#a8a77a", fire:"#ee4b2b", water:"#4b91f7", electric:"#e8c936",
@@ -82,50 +85,23 @@ function renderGrid() {
   status.textContent = state.loading ? "Pokémon werden geladen …" : "";
 }
 
-async function loadPokemon() {
-    state.loading = true;
-    status.textContent = "Pokémon werden geladen …";
-    loadMoreButton.disabled = true;
 
+async function loadPokemon() {
+    state.loading = true; status.textContent = "Pokémon werden geladen ..."; loadMoreButton.disabled = true;
     try {
         const response = await fetch(`${API}/pokemon?limit=40&offset=0`);
         if (!response.ok) throw new Error("Pokémon-Liste konnte nicht geladen werden.");
-
         const data = await response.json();
-
-        const details = await Promise.all(
-            data.results.map(async item => {
-                const result = await fetch(item.url);
-                if (!result.ok) throw new Error("Pokémon konnte nicht geladen werden.");
-                return result.json();
-            })
-        );
-
-        state.all = details;
-        state.visible = [...details];
-        renderGrid();
-
+        const details = await Promise.all(data.results.map(async item => { const result = await fetch(item.url); if (!result.ok) throw new Error("Pokémon konnte nicht geladen werden."); return result.json(); }));
+        state.all = details; state.visible = [...details]; renderGrid();
     } catch (error) {
-        status.innerHTML = `
-            Die Pokémon konnten nicht geladen werden.
-            Bitte prüfe deine Internetverbindung.
-            <button class="button" id="retry-load" type="button">
-                Versuche es erneut
-            </button>
-        `;
-
+        status.innerHTML = `Die Pokémon konnten nicht geladen werden.<br>Bitte prüfe deine Internetverbindung.<br><button class="button" id="retry-load" type="button">Versuche es erneut</button>`;
         $("#retry-load").addEventListener("click", loadPokemon);
-
     } finally {
-        state.loading = false;
-        loadMoreButton.disabled = false;
-
-        if (state.all.length) status.textContent = "";
+        state.loading = false; loadMoreButton.disabled = false; if (state.all.length) status.textContent = "";
     }
 }
 
-
-let currentPokemonIndex = 0;
 
 function openDetails(id) {
     currentPokemonIndex = state.visible.findIndex(
@@ -176,21 +152,21 @@ function renderPokemonDetails() {
     const value = item.base_stat;
     return `<div class="stat-row"><span class="stat-label">${label}</span><span class="stat-value">${value}</span><span class="stat-track"><span class="stat-fill" style="display:block;width:${Math.min(100, value / 180 * 100)}%"></span></span></div>`;
   }).join("");
-  $("#detail-content").innerHTML = `
-    <div class="detail-hero" style="--type-color:${TYPE_COLORS[primaryType] || "#7ac74c"}">
-      <div class="detail-art"><img src="${officialArtwork(pokemon)}" alt="${titleCase(pokemon.name)}"></div>
-      <div class="detail-main">
-        <div class="detail-number">${formatId(pokemon.id)} · Pokédex</div>
-        <h2 id="detail-name">${titleCase(pokemon.name)}</h2>
-        <div class="detail-types">${types.map(typeBadge).join("")}</div>
-        <div class="detail-measures">
-          <div class="measure"><strong>${(pokemon.height / 10).toFixed(1)} m</strong><span>Größe</span></div>
-          <div class="measure"><strong>${(pokemon.weight / 10).toFixed(1)} kg</strong><span>Gewicht</span></div>
-          <div class="measure"><strong>${pokemon.base_experience ?? "–"}</strong><span>Basis-EP</span></div>
-        </div>
-      </div>
-    </div>
-    <div class="detail-body"><h3>Basiswerte</h3><div class="stats">${stats}</div></div>`;
+  
+  const typeBadges = types.map(typeBadge).join("");
+
+    $("#detail-content").innerHTML = pokemonDetailTemplate({
+        id: formatId(pokemon.id),
+        name: titleCase(pokemon.name),
+        color: TYPE_COLORS[primaryType] || "#7ac74c",
+        artwork: officialArtwork(pokemon),
+        typeBadges,
+        height: (pokemon.height / 10).toFixed(1) + " m",
+        weight: (pokemon.weight / 10).toFixed(1) + " kg",
+        experience: pokemon.base_experience ?? "–",
+        statsHTML: stats
+  });
+
   if (!dialog.open) {
     lockPageScroll();
     dialog.showModal();
@@ -270,4 +246,6 @@ document.addEventListener("keydown", event => {
     event.preventDefault(); search.focus();
   }
 });
+
+window.loadPokemon = loadPokemon;
 
